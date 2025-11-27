@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Bauhaus Hero with Slider Buttons</title>
+
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;font-family:"Poppins",sans-serif;}
+  body{background:#000;color:#fff;overflow:hidden;}
+
+  /* ===== Hero Section ===== */
+  .hero{position:relative;height:100vh;width:100%;overflow:hidden;}
+
+  /* ===== Navbar ===== */
+  .hero-nav{
+    position:absolute;top:0;left:0;width:100%;z-index:20;
+    display:flex;justify-content:space-between;align-items:center;
+    padding:25px 70px;background:rgba(0,0,0,0.3);backdrop-filter:blur(5px);
+  }
+  .logo{font-size:1.8rem;font-weight:700;}
+  .menu{display:flex;list-style:none;gap:30px;}
+  .menu li a{color:#fff;text-decoration:none;font-weight:500;transition:.3s;}
+  .menu li a:hover{color:#ffea00;}
+
+  /* ===== Slides ===== */
+  .slide{
+    position:absolute;inset:0;
+    background-size:cover;background-position:center;
+    opacity:0;transform:scale(1.2);
+    transition:opacity .8s ease, transform 6s ease;
+  }
+  .slide.active{opacity:1;transform:scale(1);}
+
+  /* ===== Strips Animation ===== */
+  .strip-container{
+    position:absolute;inset:0;display:flex;z-index:15;
+  }
+  .strip{
+    flex:1;background-size:cover;background-position:center;
+    transform:translateX(-100%);
+  }
+  @keyframes slideFromLeft{
+    0%{transform:translateX(-100%);}100%{transform:translateX(0);}
+  }
+  @keyframes slideFromRight{
+    0%{transform:translateX(100%);}100%{transform:translateX(0);}
+  }
+
+  /* ===== Text Content ===== */
+  .hero-content{
+    position:absolute;top:50%;left:10%;transform:translateY(-50%);
+    z-index:25;max-width:600px;
+  }
+  .hero-content h1{
+    font-size:4rem;line-height:1.1;text-transform:uppercase;margin-bottom:20px;
+    opacity:0;transform:translateX(-100px);
+    animation:textIn 1.2s forwards ease-out .6s;
+  }
+  .hero-content p{
+    font-size:1.3rem;color:#ddd;margin-bottom:30px;
+    opacity:0;transform:translateX(-100px);
+    animation:textIn 1.2s forwards ease-out 1s;
+  }
+  .hero-btn{
+    display:inline-block;background:#fff;color:#000;padding:12px 30px;
+    border-radius:50px;font-weight:600;text-decoration:none;
+    opacity:0;transform:translateX(-100px);
+    animation:textIn 1.2s forwards ease-out 1.4s;
+  }
+  .hero-btn:hover{background:transparent;color:#fff;border:2px solid #fff;}
+
+  @keyframes textIn{
+    0%{opacity:0;transform:translateX(-100px);}
+    100%{opacity:1;transform:translateX(0);}
+  }
+
+  /* ===== Slider Buttons ===== */
+  .slider-btn{
+    position:absolute;top:50%;transform:translateY(-50%);
+    font-size:3rem;color:white;background:rgba(0,0,0,0.3);
+    border:none;padding:10px 18px;border-radius:50%;
+    cursor:pointer;z-index:30;transition:0.3s;
+  }
+  .slider-btn:hover{
+    background:rgba(255,255,255,0.2);
+    color:#ffea00;
+    box-shadow:0 0 20px rgba(255,255,255,0.3);
+  }
+  .prev{left:30px;}
+  .next{right:30px;}
+
+  /* ===== Responsive ===== */
+  @media(max-width:768px){
+    .hero-nav{flex-direction:column;align-items:flex-start;padding:15px 30px;}
+    .hero-content{left:7%;}
+    .hero-content h1{font-size:2.5rem;}
+    .hero-content p{font-size:1rem;}
+    .slider-btn{font-size:2rem;}
+  }
+</style>
+</head>
+
+<body>
+<section class="hero">
+  <!-- Navbar -->
+  <nav class="hero-nav">
+    <div class="logo">BAUHAUS</div>
+    <ul class="menu">
+      <li><a href="#">Home</a></li>
+      <li><a href="#">Projects</a></li>
+      <li><a href="#">Studio</a></li>
+      <li><a href="#">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- Slides (5 images) -->
+  <div class="slide active" style="background-image:url('https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1400&q=80');"></div>
+  <div class="slide" style="background-image:url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1400&q=80');"></div>
+  <div class="slide" style="background-image:url('https://images.unsplash.com/photo-1616627454995-68b3ed8b1ef1?auto=format&fit=crop&w=1400&q=80');"></div>
+  <div class="slide" style="background-image:url('https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=1400&q=80');"></div>
+  <div class="slide" style="background-image:url('https://images.unsplash.com/photo-1505691723518-36a4ac6b6d9b?auto=format&fit=crop&w=1400&q=80');"></div>
+
+  <!-- Text -->
+  <div class="hero-content">
+    <h1>The Luxury<br>Residence In<br>Forest</h1>
+    <p>Architecture & Interior</p>
+    <a href="#" class="hero-btn">See Project</a>
+  </div>
+
+  <!-- Slider Buttons -->
+  <button class="slider-btn prev">‹</button>
+  <button class="slider-btn next">›</button>
+</section>
+
+<script>
+const slides = document.querySelectorAll(".slide");
+let current = 0;
+let autoSlide = setInterval(nextSlide, 6000);
+
+function showSlide(index){
+  const oldSlide = slides[current];
+  current = (index + slides.length) % slides.length;
+  const newSlide = slides[current];
+  newSlide.classList.add("active");
+
+  // Strip animation
+  const container = document.createElement("div");
+  container.className = "strip-container";
+  document.querySelector(".hero").appendChild(container);
+
+  const strips = 12;
+  const direction = current % 2 === 0 ? "left" : "right";
+  for(let i = 0; i < strips; i++){
+    const strip = document.createElement("div");
+    strip.className = "strip";
+    strip.style.backgroundImage = newSlide.style.backgroundImage;
+    strip.style.backgroundPosition = `${(i / (strips - 1)) * 100}% center`;
+    const anim = direction === "left" ? "slideFromLeft" : "slideFromRight";
+    strip.style.animation = `${anim} 1.2s ease forwards`;
+    strip.style.animationDelay = `${i * 0.08}s`;
+    container.appendChild(strip);
+  }
+
+  // Cleanup
+  setTimeout(() => {
+    oldSlide.classList.remove("active");
+    container.remove();
+  }, 1800);
+}
+
+function nextSlide(){ showSlide(current + 1); }
+function prevSlide(){ showSlide(current - 1); }
+
+// Button Controls
+document.querySelector(".next").addEventListener("click", () => {
+  clearInterval(autoSlide);
+  nextSlide();
+  autoSlide = setInterval(nextSlide, 6000);
+});
+document.querySelector(".prev").addEventListener("click", () => {
+  clearInterval(autoSlide);
+  prevSlide();
+  autoSlide = setInterval(nextSlide, 6000);
+});
+</script>
+</body>
+</html>
